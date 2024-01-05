@@ -24,7 +24,6 @@ class CategoryList extends BaseJsonResource
             'name' => $this->name,
             'mainImage' => new MediumLight($this->whenLoaded('mainImage')),
 
-            'grand' => new CategoryLight($this->whenLoaded('grand')),
             'parent' => new CategoryLight($this->whenLoaded('parent')),
             'order' => $this->order,
             'image' => new MediumLight($this->whenLoaded('image')),

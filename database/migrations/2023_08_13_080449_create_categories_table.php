@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\Category\CategoryChildType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('image_id')->nullable()->constrained('media');
             $table->foreignId('main_image_id')->nullable()->constrained('media');
+            $table->enum('category_child_type', CategoryChildType::values())->default(CategoryChildType::NOT_SEY->value);
             $table->foreignId('parent_id')->nullable()->constrained('categories');
             $table->foreignId('grand_id')->nullable()->constrained('categories');
             $table->integer('order')->nullable();

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MediumController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -83,25 +84,12 @@ Route::post('/clients/export', [ClientController::class, 'export']);
 Route::put('client/health-profile', [ClientController::class, 'clientEditProfile']);
 Route::get('client/health-profile', [ClientController::class, 'profile']);
 // </editor-fold>
+// <editor-fold default-state="collapsed" desc="Client">
+Route::apiResource('/items', ItemController::class);
+// </editor-fold>
 
 
-route::get('token-fcm', function (Request $request) {
-    $now = time() - 3600;
-    $exp = $now + 3600; // Expires in one hour
 
-    $payloadFirebase = [
-        'iss' => env('FIREBASE_CLIENT_EMAIL'),
-        'sub' => env('FIREBASE_CLIENT_EMAIL'),
-        'aud' => 'https://fcm.googleapis.com/',
-        'iat' => $now,
-        'exp' => $exp,
-    ];
-    $privateKey = env('FIREBASE_PRIVATE_KEY');
-    $token = $bearerToken = JWT::encode($payloadFirebase, $privateKey, 'RS256');
-    return [
-        $token
-    ];
-});
 
 route::get('test', function (Request $request) {
 

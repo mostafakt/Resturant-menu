@@ -20,7 +20,7 @@ class ItemController extends BaseController
         $this->itemService = $itemService;
 
         $this->middleware('auth:sanctum');
-        $this->authorizeResource(Item::class);
+//        $this->authorizeResource(Item::class);
     }
 
     public function index(ItemFilter $filter)

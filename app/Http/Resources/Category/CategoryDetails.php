@@ -29,8 +29,8 @@ class CategoryDetails extends BaseJsonResource
             'childes' => $this->childes(),
 
             'parent' => new CategoryLight($this->whenLoaded('parent')),
-            'grand' => new CategoryLight($this->whenLoaded('grand')),
             'order' => $this->order,
+            'category_child_type' => $this->category_child_type,
 
             'image' => new MediumLight($this->whenLoaded('image')),
             'mainImage' => new MediumLight($this->whenLoaded('mainImage')),

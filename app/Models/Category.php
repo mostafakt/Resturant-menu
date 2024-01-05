@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Category\CategoryChildType;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,10 +17,12 @@ class Category extends BaseModel
         'parent_id',
         'grand_id',
         'order',
-
+        'category_child_type',
         'name',
     ];
-
+    protected $casts = [
+        'category_child_type' => CategoryChildType::class,
+    ];
 
     public function parent(): BelongsTo
     {
@@ -28,7 +31,10 @@ class Category extends BaseModel
 
     public function childes()
     {
-        return Category::where('parent_id', $this->id)->get();
+        if ($this->category_child_type === CategoryChildType::NOT_SEY->value)
+            return null;
+        return $this->category_child_type === CategoryChildType::CATEGORIES->value ? Category::where('parent_id', $this->id)->get()
+            : Item::where('category_id', $this->id)->get();
     }
 
     public function grand(): BelongsTo
