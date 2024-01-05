@@ -1,0 +1,90 @@
+FROM php:8.1-fpm as builder
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libcurl4-openssl-dev \
+    openssl \
+    libssl-dev \
+    zip \
+    unzip \
+    default-mysql-client
+
+RUN pecl install raphf && docker-php-ext-enable raphf
+RUN pecl install redis pecl_http
+RUN docker-php-ext-enable redis http
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure zip && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip sockets
+
+# Get latest Composer
+COPY --from=composer:2.5.8 /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www
+
+VOLUME [ "/var/www/vendor" ]
+
+COPY composer.json /var/www/
+RUN composer install --no-scripts --no-interaction
+
+ENV DB_DUMP=/usr/bin
+
+FROM builder as dev
+
+COPY docker/etc/php/php.ini-development "$PHP_INI_DIR/php.ini"
+COPY docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY artisan /var/www/
+RUN chmod 755 /docker-entrypoint.sh && chmod +x artisan
+
+EXPOSE 8080
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "/bin/bash" ]
+
+COPY . /var/www
+
+RUN composer dump-autoload
+
+FROM builder as consumer
+
+COPY docker/etc/php/php.ini-production "$PHP_INI_DIR/php.ini"
+COPY docker/consume.sh /consume.sh
+COPY artisan /var/www/
+
+RUN chmod 755 /consume.sh && chmod +x artisan
+
+COPY . /var/www
+
+RUN composer dump-autoload
+
+ENTRYPOINT [ "/consume.sh" ]
+CMD [ "php", "artisan", "mq:consume"]
+
+FROM builder as prod
+
+RUN apt-get update && apt-get -y install nginx
+
+COPY docker/etc/php/php.ini-production "$PHP_INI_DIR/php.ini"
+COPY docker/etc/nginx/conf.d/laravel-server /etc/nginx/sites-enabled/default
+COPY docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY docker/laravel-scheduler.sh /laravel-scheduler.sh
+COPY artisan /var/www/
+
+RUN chmod 755 /docker-entrypoint.sh /laravel-scheduler.sh && chmod +x artisan
+
+EXPOSE 80
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "/bin/bash" ]
+
+COPY . /var/www
+
+RUN chown -R www-data:www-data /var/www/storage
+
+RUN composer dump-autoload

@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  mysql_db:
+    ports:
+      - "${DOCKER_PRIVATE_IP}:${MYSQL_EXPOSED_PORT}:3306"
+
+  phpmyadmin:    
+    environment:
+      PMA_ABSOLUTE_URI: '${DOCKER_PUBLIC_URI}/apps/myadmin/'
+
+  redisinsight:
+    environment:
+      RITRUSTEDORIGINS: '${DOCKER_PUBLIC_URI},http://localhost:80,http://${DOCKER_PUBLIC_IP}:${NGINX_EXPOSED_PORT},http://${DOCKER_PRIVATE_IP}:${NGINX_EXPOSED_PORT},http://localhost:${NGINX_EXPOSED_PORT}'
+      RIPROXYENABLE: 1
+
+  web:
+    image: $DOCKER_IMAGE_SYSTEM:$DOCKER_TAG_SERVER
+    pull_policy: always
+    restart: unless-stopped
+
+  consumer:
+    image: $DOCKER_IMAGE_SYSTEM:$DOCKER_TAG_CONSUMER
+    pull_policy: always
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+
+  worker:
+    image: $DOCKER_IMAGE_SYSTEM:$DOCKER_TAG_CONSUMER
+    pull_policy: always
+    restart: unless-stopped
+    command: "php artisan queue:work"
+    deploy:
+      replicas: 1
+
+  nginx:
+      image: $DOCKER_IMAGE_NGINX:$DOCKER_TAG_NGINX
+      pull_policy: always
+      environment:
+        NGINX_SERVER_NAME: ${NGINX_DEPLOYMENT_SERVER_NAME}
+        NGINX_WEB_PORT: ${WEB_PORT}
+      ports:
+        - "${NGINX_EXPOSED_PORT}:80"

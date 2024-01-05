@@ -1,0 +1,10 @@
+.dockerignore 
+.git
+.gitignore 
+.gitlab-ci.*
+Jenkinsfile
+*.pyc
+vendor
+docker-compose.*
+docker/Dockerfile*
+.env*
