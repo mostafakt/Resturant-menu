@@ -13,6 +13,7 @@ class Item extends BaseModel
     protected $fillable = [
         'image_id',
         'category_id',
+        'discount_value',
 
 
         'name',

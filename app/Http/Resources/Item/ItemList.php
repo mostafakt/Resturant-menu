@@ -23,7 +23,7 @@ class ItemList extends BaseJsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'discount' => new CategoryLight($this->whenLoaded('discount')),
+            'discountValue' => $this->discount_value,
             'category' => new CategoryLight($this->whenLoaded('category')),
 
         ];

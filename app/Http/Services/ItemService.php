@@ -22,7 +22,9 @@ class ItemService extends CrudService
         $parentCategory = Category::query()->findOrFail($data['category_id']);
         abort_if($parentCategory->category_child_type === CategoryChildType::CATEGORIES->value
             , 422, 'the parent category is only for categories');
-
+        if (!$data['discount_value']) {
+            $data['discount_value'] = $parentCategory->discount_value;
+        }
         if ($parentCategory->category_child_type === CategoryChildType::NOT_SEY->value)
             $parentCategory->update(['category_child_type' => CategoryChildType::ITEMS->value]);
 

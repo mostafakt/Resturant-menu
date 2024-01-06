@@ -28,7 +28,8 @@ class ItemDetails extends BaseJsonResource
             'id' => $this->id,
             'name' => $this->name,
             'category' => new CategoryLight($this->whenLoaded('category')),
-            'discount' => new CategoryLight($this->whenLoaded('discount')),
+            'discountValue' => $this->discount_value,
+
             'image' => new MediumLight($this->whenLoaded('image')),
 
             'createdAt' => $this->created_at,

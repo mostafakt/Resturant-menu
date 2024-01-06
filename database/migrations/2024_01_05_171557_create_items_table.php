@@ -14,6 +14,7 @@ return new class extends Migration {
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->integer('discount_value')->nullable();
 
             $table->foreignId('image_id')->nullable()->constrained('media');
             $table->foreignId('category_id')->nullable()->constrained('categories');

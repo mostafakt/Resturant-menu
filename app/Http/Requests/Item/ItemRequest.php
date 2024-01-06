@@ -11,6 +11,7 @@ class ItemRequest extends BaseFromRequest
         //'userId' => 'user_id',
         'imageId' => 'image_id',
         'categoryId' => 'category_id',
+        'discountValue' => 'discount_value',
     ];
 
     public function rules(): array
@@ -19,16 +20,18 @@ class ItemRequest extends BaseFromRequest
             default:
             case 'POST':
                 return [
-                    'categoryId' => ['required','int', Rule::exists('categories', 'id')],
+                    'categoryId' => ['required', 'int', Rule::exists('categories', 'id')],
                     'imageId' => [Rule::exists('media', 'id')],
 
                     'name' => ['required', 'string'],
+                    'discountValue' => ['string'],
 
                 ];
             case 'PUT':
                 return [
                     'categoryId' => ['int', Rule::exists('categories', 'id')],
                     'imageId' => [Rule::exists('media', 'id')],
+                    'discountValue' => ['string'],
 
                     'name' => ['string'],
                 ];
