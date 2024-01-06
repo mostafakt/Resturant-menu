@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Enums\Category\CategoryChildType;
 use App\Models\Base\BaseModel;
+use App\Models\Category;
 use App\Models\Item;
 use App\Http\Services\Base\CrudService;
 
@@ -18,7 +19,7 @@ class ItemService extends CrudService
     public function create(array $data): BaseModel
     {
 
-        $parentCategory = Item::query()->findOrFail($data['category_Id']);
+        $parentCategory = Category::query()->findOrFail($data['category_id']);
         abort_if($parentCategory->category_child_type === CategoryChildType::CATEGORIES->value
             , 422, 'the parent category is only for categories');
 

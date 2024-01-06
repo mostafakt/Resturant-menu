@@ -19,8 +19,8 @@ class ItemRequest extends BaseFromRequest
             default:
             case 'POST':
                 return [
-                    'categoryId' => ['int', Rule::exists('categories', 'id')],
-                    'imageId' => ['required', Rule::exists('media', 'id')],
+                    'categoryId' => ['required','int', Rule::exists('categories', 'id')],
+                    'imageId' => [Rule::exists('media', 'id')],
 
                     'name' => ['required', 'string'],
 

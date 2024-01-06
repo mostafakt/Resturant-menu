@@ -23,6 +23,7 @@ class CategoryList extends BaseJsonResource
             'id' => $this->id,
             'name' => $this->name,
             'mainImage' => new MediumLight($this->whenLoaded('mainImage')),
+            'discountValue' => $this->discount_value,
 
             'parent' => new CategoryLight($this->whenLoaded('parent')),
             'order' => $this->order,

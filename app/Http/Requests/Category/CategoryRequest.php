@@ -13,7 +13,8 @@ class CategoryRequest extends BaseFromRequest
         'mainImageId' => 'main_image_id',
         'imageId' => 'image_id',
         'grandId' => 'grand_id',
-        'parentId' => 'parent_id'
+        'parentId' => 'parent_id',
+        'discountValue' => 'discount_value'
     ];
 
     public function rules(): array
@@ -24,10 +25,11 @@ class CategoryRequest extends BaseFromRequest
                 return [
 
                     'name' => ['required', 'string'],
+                    'discountValue' => ['required', 'string'],
                     'order' => ['int'],
                     'grandId' => ['int', Rule::exists('categories', 'id')],
                     'parentId' => ['int', Rule::exists('categories', 'id')],
-                    'imageId' => ['required', Rule::exists('media', 'id')],
+                    'imageId' => [Rule::exists('media', 'id')],
                     'mainImageId' => [Rule::exists('media', 'id')],
 
                 ];
@@ -35,6 +37,8 @@ class CategoryRequest extends BaseFromRequest
                 return [
 
                     'name' => ['string'],
+                    'discountValue' => ['string'],
+
                     'order' => ['numeric'],
                     'grandId' => ['int', Rule::exists('categories', 'id')],
                     'parentId' => ['int', Rule::exists('categories', 'id')],

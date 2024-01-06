@@ -20,13 +20,11 @@ class CategoryFactory extends Factory
     {
         return [
 
-            'name' =>    fake()->name(),
+            'name' => fake()->name(),
+            'order' => 0,
 
-
-            'order'=>fake()->numberBetween(1,10),
-            'parent_id' => fake()->randomElement(Category::query()
-                ->pluck('id')->toArray()),
             'image_id' => Medium::factory(),
+            'discount_value' => fake()->numberBetween(0, 99),
             'main_image_id' => Medium::factory(),
         ];
     }

@@ -18,6 +18,7 @@ class Category extends BaseModel
         'grand_id',
         'order',
         'category_child_type',
+        'discount_value',
         'name',
     ];
     protected $casts = [
