@@ -22,6 +22,9 @@ class CategoryService extends CrudService
             abort_if($parentCategory->order > 3, 422, 'you can`t add more sub categories level');
             abort_if($parentCategory->category_child_type === CategoryChildType::ITEMS->value
                 , 422, 'the parent category is only for products');
+            if (!$data['discount_value']) {
+                $data['discount_value'] = $parentCategory->discount_value;
+            }
             $data['order'] = $parentCategory->order + 1;
             if ($parentCategory->category_child_type === CategoryChildType::NOT_SEY->value)
                 $parentCategory->update(['category_child_type' => CategoryChildType::CATEGORIES->value]);

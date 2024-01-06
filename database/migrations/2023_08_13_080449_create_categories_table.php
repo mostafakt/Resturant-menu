@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->enum('category_child_type', CategoryChildType::values())->default(CategoryChildType::NOT_SEY->value);
             $table->foreignId('parent_id')->nullable()->constrained('categories');
             $table->foreignId('grand_id')->nullable()->constrained('categories');
-            $table->string('discount_value')->nullable();
+            $table->integer('discount_value')->nullable();
             $table->integer('order')->default(0);
 
             $table->string('name');
