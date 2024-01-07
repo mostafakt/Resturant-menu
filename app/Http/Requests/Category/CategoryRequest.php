@@ -27,7 +27,6 @@ class CategoryRequest extends BaseFromRequest
                     'name' => ['required', 'string'],
                     'discountValue' => ['numeric'],
                     'order' => ['numeric'],
-                    'grandId' => ['int', Rule::exists('categories', 'id')],
                     'parentId' => ['int', Rule::exists('categories', 'id')],
                     'imageId' => [Rule::exists('media', 'id')],
                     'mainImageId' => [Rule::exists('media', 'id')],
@@ -40,7 +39,6 @@ class CategoryRequest extends BaseFromRequest
                     'discountValue' => ['numeric'],
 
                     'order' => ['numeric'],
-                    'grandId' => ['int', Rule::exists('categories', 'id')],
                     'parentId' => ['int', Rule::exists('categories', 'id')],
                     'imageId' => [Rule::exists('media', 'id')],
                     'mainImageId' => [Rule::exists('media', 'id')],
