@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Menu;
 
 use App\Http\Resources\Base\BaseJsonResource;
+use App\Http\Resources\Category\CategoryDetails;
 use App\Http\Resources\Category\CategoryLight;
 use App\Http\Resources\Medium\MediumLight;
 use App\Http\Resources\User\UserLight;
@@ -24,7 +25,7 @@ class MenuDetails extends BaseJsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'mainCategory' => new CategoryLight($this->whenLoaded('category')),
+            'mainCategory' => new CategoryDetails($this->whenLoaded('category')),
             'discountValue' => $this->discount_value,
 
 

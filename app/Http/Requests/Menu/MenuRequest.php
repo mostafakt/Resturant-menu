@@ -10,6 +10,7 @@ class MenuRequest extends BaseFromRequest
     protected array $attributesMap = [
         //'userId' => 'user_id',
         'mainCategoryId' => 'main_category_id',
+        'discountValue' => 'discount_value',
     ];
 
     public function rules(): array
@@ -20,12 +21,14 @@ class MenuRequest extends BaseFromRequest
                 return [
                     //
                     'name' => ['required', 'string'],
+                    'discountValue' => ['required', 'string'],
                     'mainCategoryId' => ['required', 'int', Rule::exists('categories', 'id')],
 
                 ];
             case 'PUT':
                 return [
                     'name' => ['string'],
+                    'discountValue' => ['string'],
                     'mainCategoryId' => ['int', Rule::exists('categories', 'id')],
 
                 ];

@@ -14,7 +14,7 @@ class ItemDetails extends BaseJsonResource
         return [
             'image',
             'category',
-            'discount',
+
             'createdBy',
             'updatedBy',
             'deletedBy',

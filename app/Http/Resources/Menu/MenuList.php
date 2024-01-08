@@ -4,6 +4,7 @@ namespace App\Http\Resources\Menu;
 
 use App\Http\Resources\Base\BaseJsonResource;
 use App\Http\Resources\Category\CategoryLight;
+use App\Http\Resources\User\UserLight;
 
 class MenuList extends BaseJsonResource
 {
@@ -11,6 +12,8 @@ class MenuList extends BaseJsonResource
     {
         return [
             'category',
+            'createdBy',
+
         ];
     }
 
@@ -22,6 +25,8 @@ class MenuList extends BaseJsonResource
             'mainCategory' => new CategoryLight($this->whenLoaded('category')),
             'discountValue' => $this->discount_value,
             'createdAt' => $this->created_at,
+            'createdBy' => new UserLight($this->whenLoaded('createdBy')),
+
         ];
     }
 }

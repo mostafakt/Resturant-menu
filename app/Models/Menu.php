@@ -14,6 +14,7 @@ class Menu extends BaseModel
         'image_id',
         'main_category_id',
         'name',
+        'discount_value',
 
     ];
 

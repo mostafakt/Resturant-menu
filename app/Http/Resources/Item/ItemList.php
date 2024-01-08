@@ -12,7 +12,6 @@ class ItemList extends BaseJsonResource
         return [
             'image',
             'category',
-            'discount',
 
 
         ];

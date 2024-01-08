@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('main_category_id')->nullable()->constrained('categories');
             $table->string('name');
+            $table->string('discount_value');
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();

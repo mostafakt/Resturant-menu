@@ -29,17 +29,7 @@ class AuthService extends BaseService
         $this->userService = $userService;
     }
 
-    public function getMe(): array
-    {
-        $user = Auth::user();
-        abort_if(!$user, 401, __('exceptions.unauthorized'));
-        $collectionPoint = CollectionPoint::where("employ_id", $user->id)->first();
-       
-        return [
-            'user' => $user,
-            'collectionPoint' => $collectionPoint
-        ];
-    }
+
 
     public function clientGetMe()
     {
@@ -48,37 +38,12 @@ class AuthService extends BaseService
         return $client;
     }
 
-    public function investorGetMe()
-    {
-        $investor =  Auth::user()->investor;
-        abort_if(!$investor, 401, __('exceptions.unauthorized'));
-        return $investor;
-    }
-
-    public function driverGetMe()
-    {
-        $driver =  Auth::user()->driver;
-        abort_if(!$driver, 401, __('exceptions.unauthorized'));
-        return $driver;
-    }
 
     public function updateMe(array $data): User
     {
         return $this->userService->update(Auth::id(), $data);
     }
 
-
-    public function driverUpdateMe(array $data)
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        $driver = $user->driver;
-
-        $user->update($data);
-        $driver?->update($data);
-        abort_if(!$driver, 401, __('exceptions.unauthorized'));
-        return $driver->refresh();
-    }
 
     public function clientUpdateMe(array $data)
     {
@@ -108,21 +73,6 @@ class AuthService extends BaseService
         abort_if(!$client, 401, __('exceptions.unauthorized'));
 
         return $client->refresh();
-    }
-
-    public function investorUpdateMe(array $data)
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        $investor = $user->investor;
-
-        $user->update($data);
-
-        $investor?->update($data);
-
-        abort_if(!$investor, 401, __('exceptions.unauthorized'));
-
-        return $investor->refresh();
     }
 
     public function verifyMobile(string $code)
@@ -163,13 +113,7 @@ class AuthService extends BaseService
         $user->currentAccessToken()->changeLanguage($data['language']);
     }
 
-    public function changeFCMToken($data)
-    {
-        /** @var User $user */
-        $user = Auth::user();
 
-        $user->currentAccessToken()->changeFCMToken($data['token'] ?? null);
-    }
 
     public function register(array $data): User
     {
@@ -181,7 +125,7 @@ class AuthService extends BaseService
             $user = $this->userService->create($data);
             $user->client()->create();
             $user->assignRole(RoleName::CLIENT->value);
-            $this->sendOtp($data['mobile']);
+
             return $user;
         });
     }
@@ -397,91 +341,7 @@ class AuthService extends BaseService
         });
     }
 
-    public function investorLogin($data)
-    {
-        return db::transaction(function () use ($data) {
-            $otpData = Otp::where('mobile', $data['mobile'])
-                ->where('otp', $data['code'])
-                ->where('is_verified', false)
-                ->where('expires_at', '>', Carbon::now()) // Check if OTP has not expired
-                ->first();
-            abort_if(!$otpData, 400, __('Invalid OTP or OTP expired'));
-            $otpData->is_verified = true;
-            $otpData->save();
 
-            /** @var User $user */
-            $user = User::where('mobile', $data['mobile'])->firstor(function () {
-                abort(400, __('Invalid credentials'));
-            });
 
-            if ($user->status->value === UserStatus::ACTIVE->value) {
-                $token = $user->createToken('authToken', personalAccessTokenType::investor->value)->plainTextToken;
-            }
-            if ($user->status->value === UserStatus::INACTIVE->value) {
-                abort(403, __('exceptions.auth.banned'));
-            }
 
-            if (!$user->hasRole(RoleName::INVESTOR->value)) {
-                abort(403, __('exceptions.auth.banned'));
-            }
-
-            $investor = $user->investor;
-            abort_if(!$investor, 401, __('exceptions.unauthorized'));
-
-            return [
-                'token' => $token ?? null,
-                'investor' => $investor,
-            ];
-        });
-    }
-
-    public function driverLogin($data)
-    {
-        return db::transaction(function () use ($data) {
-            $otpData = Otp::where('mobile', $data['mobile'])
-                ->where('otp', $data['code'])
-                ->where('is_verified', false)
-                ->where('expires_at', '>', Carbon::now()) // Check if OTP has not expired
-                ->first();
-
-            abort_if(!$otpData, 400, __('Invalid OTP or OTP expired'));
-            $otpData->is_verified = true;
-            $otpData->save();
-
-            /** @var User $user */
-            $user = User::where('users.mobile', $data['mobile'])->firstor(function () use ($data) {
-                abort(400, __('Invalid credentials'));
-            });
-
-            if ($user->status->value === UserStatus::ACTIVE->value) {
-                $token = $user->createToken('authToken', personalAccessTokenType::driver->value)->plainTextToken;
-            }
-            if ($user->status->value === UserStatus::INACTIVE->value) {
-                abort(403, __('exceptions.auth.banned'));
-            }
-
-            if (!$user->hasRole(RoleName::Driver->value)) {
-                abort(403, __('exceptions.auth.banned'));
-            }
-
-            $driver = $user->driver;
-            abort_if(!$driver, 401, __('exceptions.unauthorized'));
-
-            return [
-                'token' => $token ?? null,
-                'driver' => $driver,
-            ];
-        });
-    }
-
-    public function sendOtp(string $mobile)
-    {
-        $otp = $this->generateCode();
-        $otpData = Otp::updateOrCreate(['mobile' => $mobile], [
-            'otp' => $otp,
-            'is_verified' => false,
-            'expires_at' => Carbon::now()->addMinutes(5) // Set OTP expiry time to 5 minutes from now
-        ]);
-        Notification::send(null, new SendOtp('963' . $mobile, $otp));
-    }
 }

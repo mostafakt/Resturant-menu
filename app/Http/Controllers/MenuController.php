@@ -20,7 +20,6 @@ class MenuController extends BaseController
         $this->menuService = $menuService;
 
         $this->middleware('auth:sanctum');
-        $this->authorizeResource(Menu::class);
     }
 
     public function index(MenuFilter $filter)

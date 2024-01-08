@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MediumController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use Firebase\JWT\JWT;
@@ -64,31 +65,26 @@ Route::apiResource('/media', MediumController::class);
 
 // <editor-fold default-state="collapsed" desc="Roles & Permission">
 Route::apiResource('/roles', RoleController::class);
-Route::post('/roles/export', [RoleController::class, 'export']);
 Route::apiResource('/permissions', PermissionController::class)->only('index');
 // </editor-fold>
 
 // <editor-fold default-state="collapsed" desc="Category & Attribute">
 Route::apiResource('/category', CategoryController::class);
-Route::post('/category/export', [CategoryController::class, 'export']);
 
 // </editor-fold>
 
 // <editor-fold default-state="collapsed" desc="Employees">
 Route::apiResource('/employees', EmployeeController::class);
-Route::post('/employees/export', [EmployeeController::class, 'export']);
 // </editor-fold>
 // <editor-fold default-state="collapsed" desc="Client">
 Route::apiResource('/clients', ClientController::class)->except('store');
-Route::post('/clients/export', [ClientController::class, 'export']);
-Route::put('client/health-profile', [ClientController::class, 'clientEditProfile']);
-Route::get('client/health-profile', [ClientController::class, 'profile']);
 // </editor-fold>
-// <editor-fold default-state="collapsed" desc="Client">
+// <editor-fold default-state="collapsed" desc="items">
 Route::apiResource('/items', ItemController::class);
 // </editor-fold>
-
-
+// <editor-fold default-state="collapsed" desc="menu">
+Route::apiResource('/menus', MenuController::class);
+// </editor-fold>
 
 
 route::get('test', function (Request $request) {
