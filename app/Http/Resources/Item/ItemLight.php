@@ -17,6 +17,8 @@ class ItemLight extends BaseJsonResource
     {
         return [
             'id' => $this->id,
+            'name' => $this->name,
+            'discountValue' => $this->discount_value,
 
         ];
     }

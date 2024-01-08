@@ -33,8 +33,13 @@ class Category extends BaseModel
     public function childes()
     {
 
-        return  Category::query()->where('parent_id', $this->id)->get();
+        if ($this->category_child_type?->value === CategoryChildType::NOT_SEY->value)
+            return null;
 
+        return $this->category_child_type?->value === CategoryChildType::CATEGORIES->value ?
+
+            Category::where('parent_id', $this->id)->get()
+            : Item::where('category_id', $this->id)->get();
     }
 
     public function grand(): BelongsTo

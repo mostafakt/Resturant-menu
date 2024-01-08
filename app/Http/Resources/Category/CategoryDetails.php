@@ -26,11 +26,15 @@ class CategoryDetails extends BaseJsonResource
 
     function childesType()
     {
-//        if ($this->category_child_type === CategoryChildType::ITEMS->value)
-//            return ItemLight::collection($this->childes());
-//        else
-//            return CategoryLight::collection($this->childes());
-        return $this->childes();
+        if ($this->childes()) {
+            if ($this->category_child_type?->value === CategoryChildType::ITEMS->value) {
+
+                return ItemLight::collection($this->childes());
+            } else
+
+                return CategoryLight::collection($this->childes());
+        } else return [];
+//        return $this->childes();
     }
 
     public function toArray($request): array
